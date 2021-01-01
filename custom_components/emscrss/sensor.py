@@ -1,4 +1,5 @@
 """Sensor platform for emscrss."""
+from georss_client.xml_parser import feed
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
 
 from datetime import timedelta
@@ -122,10 +123,17 @@ class EMSCRSSServiceSensor(Entity):
             )
             self._state = len(feed_entries)
             # And now compute the attributes from the filtered events.
-            matrix = {}
+            data = {}
+            entries = []
             for entry in feed_entries:
-                matrix[entry.title] = f"distance: {entry.distance_to_home:.1f}, magnitude: {entry.magnitude:.1f}"
-            self._state_attributes = matrix
+                feed_entry = {}
+                feed_entry["distance"] = round(entry.distance_to_home, 0)
+                feed_entry["magnitude"] = entry.magnitude
+                feed_entry["time"] = entry.time
+                feed_entry["link"] = entry.link
+                entries.append(feed_entry)
+            data["earthquakes"] = entries
+            self._state_attributes = data
         elif status == UPDATE_OK_NO_DATA:
             _LOGGER.debug("Update successful, but no data received from %s", self._feed)
             # Don't change the state or state attributes.
