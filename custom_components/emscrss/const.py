@@ -3,7 +3,7 @@
 NAME = "EMSC Earthquake RSS Feed"
 DOMAIN = "emscrss"
 DOMAIN_DATA = f"{DOMAIN}_data"
-VERSION = "0.0.1"
+VERSION = "0.1"
 ATTRIBUTION = "Data provided by https://www.emsc-csem.org/service/rss/"
 ISSUE_URL = "https://github.com/msekoranja/emsc-hacs-repository/issues"
 

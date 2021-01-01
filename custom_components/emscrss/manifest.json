@@ -9,6 +9,6 @@
     "@msekoranja"
   ],
   "requirements": [
-    "georss_emsc_csem_earthquakes_client==0.1"
+    "georss_emsc_csem_earthquakes_client==0.2"
   ]
 }

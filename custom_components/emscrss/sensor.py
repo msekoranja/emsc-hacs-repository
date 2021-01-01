@@ -24,10 +24,12 @@ from homeassistant.helpers.entity import Entity
 _LOGGER = logging.getLogger(__name__)
 
 CONF_MAGNITUDE = "magnitude"
+CONF_AGE = "age"
 
 DEFAULT_URL = "https://www.emsc-csem.org/service/rss/rss.php?typ=emsc"
 DEFAULT_RADIUS_IN_KM = 300.0
 DEFAULT_MAGNITUDE = 3.0
+DEFAULT_AGE_HOURS = 24
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
@@ -38,7 +40,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_LONGITUDE): cv.longitude,
         vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM): vol.Coerce(float),
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): vol.Coerce(float)
+        vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): vol.Coerce(float),
+        vol.Optional(CONF_AGE, default=DEFAULT_AGE_HOURS): vol.Coerce(int)
     }
 )
 
@@ -51,20 +54,22 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     url = config.get(CONF_URL)
     radius_in_km = config.get(CONF_RADIUS)
     magnitude = config.get(CONF_MAGNITUDE)
+    age = timedelta(hourse=config.get(CONF_AGE))
 
     _LOGGER.debug(
-        "latitude=%s, longitude=%s, url=%s, radius=%s, magintude=%s",
+        "latitude=%s, longitude=%s, url=%s, radius=%s, magintude=%s, age=%s",
         latitude,
         longitude,
         url,
         radius_in_km,
-        magnitude
+        magnitude,
+        age
     )
 
     # Create all sensors based on categories.
     devices = []
     device = EMSCRSSServiceSensor(
-        name, (latitude, longitude), url, radius_in_km, magnitude
+        name, (latitude, longitude), url, radius_in_km, magnitude, age
     )
     devices.append(device)
     add_entities(devices, True)
@@ -74,7 +79,7 @@ class EMSCRSSServiceSensor(Entity):
     """Representation of a Sensor."""
 
     def __init__(
-        self, service_name, coordinates, url, radius, magnitude
+        self, service_name, coordinates, url, radius, magnitude, age
     ):
         """Initialize the sensor."""
         self._service_name = service_name
@@ -86,6 +91,7 @@ class EMSCRSSServiceSensor(Entity):
             url,
             filter_radius=radius,
             filter_minimum_magnitude=magnitude,
+            filter_timespan=age
         )
 
     @property
