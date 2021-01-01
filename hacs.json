@@ -1,10 +1,8 @@
 {
-    "name": "Integration blueprint",
+    "name": "EMSC Earthquake RSS Feed",
     "hacs": "1.6.0",
     "domains": [
-        "binary_sensor",
-        "sensor",
-        "switch"
+        "sensor"
     ],
     "iot_class": "Cloud Polling",
     "homeassistant": "0.118.0"
