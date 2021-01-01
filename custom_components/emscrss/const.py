@@ -8,12 +8,11 @@ ATTRIBUTION = "Data provided by https://www.emsc-csem.org/service/rss/"
 ISSUE_URL = "https://github.com/msekoranja/emsc-hacs-repository/issues"
 
 # Icons
-ICON = "mdi:format-quote-close"
+ICON = "mdi:alert"
 
 # Platforms
 SENSOR = "sensor"
 PLATFORMS = [SENSOR]
-
 
 # Configuration and options
 

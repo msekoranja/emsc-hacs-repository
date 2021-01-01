@@ -1,56 +1,71 @@
 [![GitHub Release][releases-shield]][releases]
-[![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]][license]
-
 [![hacs][hacsbadge]][hacs]
-[![Project Maintenance][maintenance-shield]][user_profile]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-[![Discord][discord-shield]][discord]
-[![Community Forum][forum-shield]][forum]
+The `emscrss` sensor retrieves events from a EMSC earthquake RSS feed and shows information of those events filtered by distance and magnitude to Home Assistant.
 
-_Component to integrate with [integration_blueprint][integration_blueprint]._
+The reference point for comparing the distance is by default defined by `latitude` and `longitude` in the basic configuration.
 
-**This component will set up the following platforms.**
+Only entries of the feed are considered that define a location as `point` or `polygon` in *georss.org* format or as *WGS84 latitude/longitude*.
 
-Platform | Description
--- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from API.
-`switch` | Switch something `True` or `False`.
+The data is updated every 5 minutes.
 
-![example][exampleimg]
+## Usage:
+To enable the events sensor, add the following lines to your `configuration.yaml`.
 
-{% if not installed %}
-## Installation
+```yaml
+sensor:
+  - platform: emscrss
+    name: Earthquakes near me
+    radius: 300
+    magnitude: 3.0
+```
 
-1. Click install.
-1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Blueprint".
-
-{% endif %}
-
-
-## Configuration is done in the UI
+Parameters:
+```yaml
+url:
+  description: Full URL of the EMSC feed.
+  required: false
+  type: string
+  default:
+name:
+  description: Name of the sensor used in generating the entity id.
+  required: false
+  type: string
+  default: https://www.emsc-csem.org/service/rss/rss.php?typ=emsc&min_lat=10&min_long=-30&max_long=65
+latitude:
+  description: Latitude of the coordinates around which events are considered.
+  required: false
+  type: string
+  default: Latitude defined in your `configuration.yaml`
+longitude:
+  description: Longitude of the coordinates around which events are considered.
+  required: false
+  type: string
+  default: Longitude defined in your `configuration.yaml`
+radius:
+  description: The distance in kilometers around the Home Assistant's coordinates in which events are considered.
+  required: false
+  type: float
+  default: 300km
+magnitude:
+  description: The magnitude (ML) above which events are considered.
+  required: false
+  type: float
+  default: 3.0
+```
 
 <!---->
 
+<a href="https://www.buymeacoffee.com/msekoranja" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a><br>
+
 ***
 
-[integration_blueprint]: https://github.com/custom-components/integration_blueprint
-[buymecoffee]: https://www.buymeacoffee.com/ludeeus
+[emscrss]: https://github.com/msekoranja/emsc-hacs-repository
+[buymecoffee]: https://www.buymeacoffee.com/msekoranja
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
-[commits-shield]: https://img.shields.io/github/commit-activity/y/custom-components/integration_blueprint.svg?style=for-the-badge
-[commits]: https://github.com/custom-components/integration_blueprint/commits/master
 [hacs]: https://hacs.xyz
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
-[discord]: https://discord.gg/Qa5fW2R
-[discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
-[exampleimg]: example.png
-[forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
-[forum]: https://community.home-assistant.io/
-[license]: https://github.com/custom-components/integration_blueprint/blob/main/LICENSE
-[license-shield]: https://img.shields.io/github/license/custom-components/integration_blueprint.svg?style=for-the-badge
-[maintenance-shield]: https://img.shields.io/badge/maintainer-Joakim%20Sørensen%20%40ludeeus-blue.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/custom-components/integration_blueprint.svg?style=for-the-badge
-[releases]: https://github.com/custom-components/integration_blueprint/releases
-[user_profile]: https://github.com/ludeeus
+[releases-shield]: https://img.shields.io/github/release/cmsekoranja/emsc-hacs-repository.svg?style=for-the-badge
+[releases]: https://github.com/msekoranja/emsc-hacs-repository/releases
+[user_profile]: https://github.com/msekoranja

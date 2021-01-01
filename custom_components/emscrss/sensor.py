@@ -1,46 +1,11 @@
-"""Sensor platform for integration_blueprint."""
+"""Sensor platform for emscrss."""
 from .const import DEFAULT_NAME, DOMAIN, ICON, SENSOR
-from .entity import IntegrationBlueprintEntity
 
-
-async def async_setup_entry(hass, entry, async_add_devices):
-    """Setup sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_devices([IntegrationBlueprintSensor(coordinator, entry)])
-
-
-class IntegrationBlueprintSensor(IntegrationBlueprintEntity):
-    """integration_blueprint Sensor class."""
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return f"{DEFAULT_NAME}_{SENSOR}"
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self.coordinator.data.get("body")
-
-    @property
-    def icon(self):
-        """Return the icon of the sensor."""
-        return ICON
-
-
-
-"""
-Generic GeoRSS events service.
-
-Retrieves current events (typically incidents or alerts) in GeoRSS format, and
-shows information on events filtered by distance to the HA instance's location
-and grouped by category.
-"""
 from datetime import timedelta
 import logging
 
 from georss_client import UPDATE_OK, UPDATE_OK_NO_DATA
-from georss_generic_client import GenericFeed
+from georss_emsc_csem_earthquakes_client import EMSCEarthquakesFeed
 import voluptuous as vol
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
@@ -49,27 +14,18 @@ from homeassistant.const import (
     CONF_LONGITUDE,
     CONF_NAME,
     CONF_RADIUS,
-    CONF_UNIT_OF_MEASUREMENT,
     CONF_URL,
-    LENGTH_KILOMETERS,
+    LENGTH_KILOMETERS
 )
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
 _LOGGER = logging.getLogger(__name__)
 
-ATTR_CATEGORY = "category"
-ATTR_DISTANCE = "distance"
-ATTR_TITLE = "title"
+CONF_MAGNITUDE = "magnitude"
 
-CONF_CATEGORIES = "categories"
-
-DEFAULT_ICON = "mdi:alert"
-DEFAULT_NAME = "Event Service"
-DEFAULT_RADIUS_IN_KM = 20.0
-DEFAULT_UNIT_OF_MEASUREMENT = "Events"
-
-DOMAIN = "geo_rss_events"
+DEFAULT_RADIUS_IN_KM = 300.0
+DEFAULT_MAGNITUDE = 3.0
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
@@ -79,78 +35,61 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_LATITUDE): cv.latitude,
         vol.Optional(CONF_LONGITUDE): cv.longitude,
         vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM): vol.Coerce(float),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Optional(CONF_CATEGORIES, default=[]): vol.All(cv.ensure_list, [cv.string]),
-        vol.Optional(
-            CONF_UNIT_OF_MEASUREMENT, default=DEFAULT_UNIT_OF_MEASUREMENT
-        ): cv.string,
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME): vol.Coerce(float),
+        vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): cv.string
     }
 )
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up the GeoRSS component."""
+    """Set up the EMSC component."""
+    name = config.get(CONF_NAME)
     latitude = config.get(CONF_LATITUDE, hass.config.latitude)
     longitude = config.get(CONF_LONGITUDE, hass.config.longitude)
     url = config.get(CONF_URL)
     radius_in_km = config.get(CONF_RADIUS)
-    name = config.get(CONF_NAME)
-    categories = config.get(CONF_CATEGORIES)
-    unit_of_measurement = config.get(CONF_UNIT_OF_MEASUREMENT)
+    magnitude = config.get(CONF_MAGNITUDE)
 
     _LOGGER.debug(
-        "latitude=%s, longitude=%s, url=%s, radius=%s",
+        "latitude=%s, longitude=%s, url=%s, radius=%s, magintude=%s",
         latitude,
         longitude,
         url,
         radius_in_km,
+        magnitude
     )
 
     # Create all sensors based on categories.
     devices = []
-    if not categories:
-        device = GeoRssServiceSensor(
-            (latitude, longitude), url, radius_in_km, None, name, unit_of_measurement
-        )
-        devices.append(device)
-    else:
-        for category in categories:
-            device = GeoRssServiceSensor(
-                (latitude, longitude),
-                url,
-                radius_in_km,
-                category,
-                name,
-                unit_of_measurement,
-            )
-            devices.append(device)
+    device = EMSCRSSServiceSensor(
+        name, (latitude, longitude), url, radius_in_km, magnitude
+    )
+    devices.append(device)
     add_entities(devices, True)
 
 
-class GeoRssServiceSensor(Entity):
+class EMSCRSSServiceSensor(Entity):
     """Representation of a Sensor."""
 
     def __init__(
-        self, coordinates, url, radius, category, service_name, unit_of_measurement
+        self, service_name, coordinates, url, radius, magnitude
     ):
         """Initialize the sensor."""
-        self._category = category
         self._service_name = service_name
         self._state = None
         self._state_attributes = None
-        self._unit_of_measurement = unit_of_measurement
 
-        self._feed = GenericFeed(
+        self._feed = EMSCEarthquakesFeed(
             coordinates,
             url,
             filter_radius=radius,
-            filter_categories=None if not category else [category],
+            filter_minimum_magnitude=magnitude,
         )
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return f"{self._service_name} {'Any' if self._category is None else self._category}"
+        return f"{self._service_name}"
 
     @property
     def state(self):
@@ -160,12 +99,12 @@ class GeoRssServiceSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement."""
-        return self._unit_of_measurement
+        return None
 
     @property
     def icon(self):
         """Return the default icon to use in the frontend."""
-        return DEFAULT_ICON
+        return ICON
 
     @property
     def device_state_attributes(self):
@@ -173,7 +112,7 @@ class GeoRssServiceSensor(Entity):
         return self._state_attributes
 
     def update(self):
-        """Update this sensor from the GeoRSS service."""
+        """Update this sensor from the EMSC service."""
 
         status, feed_entries = self._feed.update()
         if status == UPDATE_OK:
@@ -184,7 +123,7 @@ class GeoRssServiceSensor(Entity):
             # And now compute the attributes from the filtered events.
             matrix = {}
             for entry in feed_entries:
-                matrix[entry.title] = f"{entry.distance_to_home:.0f}{LENGTH_KILOMETERS}"
+                matrix[entry.title] = f"distance: {entry.distance_to_home:.1f}, magnitude: {entry.magnitude:.1f}"
             self._state_attributes = matrix
         elif status == UPDATE_OK_NO_DATA:
             _LOGGER.debug("Update successful, but no data received from %s", self._feed)
