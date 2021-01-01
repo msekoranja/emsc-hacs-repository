@@ -41,7 +41,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM): vol.Coerce(float),
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
         vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): vol.Coerce(float),
-        vol.Optional(CONF_AGE, default=DEFAULT_AGE_HOURS): vol.Coerce(int)
+        vol.Optional(CONF_AGE, default=DEFAULT_AGE_HOURS): vol.Coerce(float)
     }
 )
 
@@ -54,7 +54,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     url = config.get(CONF_URL)
     radius_in_km = config.get(CONF_RADIUS)
     magnitude = config.get(CONF_MAGNITUDE)
-    age = timedelta(hourse=config.get(CONF_AGE))
+    age = timedelta(hours=config.get(CONF_AGE))
 
     _LOGGER.debug(
         "latitude=%s, longitude=%s, url=%s, radius=%s, magintude=%s, age=%s",
