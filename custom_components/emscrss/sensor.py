@@ -133,9 +133,10 @@ class EMSCRSSServiceSensor(Entity):
             entries = []
             for entry in feed_entries:
                 feed_entry = {}
-                feed_entry["distance"] = round(entry.distance_to_home, 0)
+                feed_entry["title"] = entry.title
                 feed_entry["magnitude"] = entry.magnitude
                 feed_entry["time"] = entry.time
+                feed_entry["distance"] = round(entry.distance_to_home, 0)
                 feed_entry["link"] = entry.link
                 entries.append(feed_entry)
             data["earthquakes"] = entries
