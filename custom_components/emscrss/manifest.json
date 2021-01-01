@@ -3,12 +3,12 @@
   "name": "EMSC Earthquake RSS Feed",
   "documentation": "https://github.com/msekoranja/emsc-hacs-repository",
   "issue_tracker": "https://github.com/msekoranja/emsc-hacs-repository/issues",
-  "dependencies": [
-    "georss_emsc_csem_earthquakes_client==0.1"
-  ],
+  "dependencies": [],
   "config_flow": false,
   "codeowners": [
     "@msekoranja"
   ],
-  "requirements": []
+  "requirements": [
+    "georss_emsc_csem_earthquakes_client==0.1"
+  ]
 }
