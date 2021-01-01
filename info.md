@@ -32,7 +32,7 @@ name:
   description: Name of the sensor used in generating the entity id.
   required: false
   type: string
-  default: https://www.emsc-csem.org/service/rss/rss.php?typ=emsc&min_lat=10&min_long=-30&max_long=65
+  default: https://www.emsc-csem.org/service/rss/rss.php?typ=emsc
 latitude:
   description: Latitude of the coordinates around which events are considered.
   required: false

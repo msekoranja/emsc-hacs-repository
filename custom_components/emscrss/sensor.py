@@ -24,6 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_MAGNITUDE = "magnitude"
 
+DEFAULT_URL = "https://www.emsc-csem.org/service/rss/rss.php?typ=emsc"
 DEFAULT_RADIUS_IN_KM = 300.0
 DEFAULT_MAGNITUDE = 3.0
 
@@ -31,12 +32,12 @@ SCAN_INTERVAL = timedelta(minutes=5)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        vol.Required(CONF_URL): cv.string,
+        vol.Optional(CONF_URL, default=DEFAULT_URL): cv.string,
         vol.Optional(CONF_LATITUDE): cv.latitude,
         vol.Optional(CONF_LONGITUDE): cv.longitude,
         vol.Optional(CONF_RADIUS, default=DEFAULT_RADIUS_IN_KM): vol.Coerce(float),
-        vol.Optional(CONF_NAME, default=DEFAULT_NAME): vol.Coerce(float),
-        vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): cv.string
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        vol.Optional(CONF_MAGNITUDE, default=DEFAULT_MAGNITUDE): vol.Coerce(float)
     }
 )
 
