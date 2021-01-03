@@ -16,7 +16,7 @@ To enable the events sensor, add the following lines to your `configuration.yaml
 ```yaml
 sensor:
   - platform: emscrss
-    name: Earthquakes near me
+    name: Earthquakes
     radius: 300
     magnitude: 3.0
 ```
@@ -53,6 +53,40 @@ magnitude:
   required: false
   type: float
   default: 3.0
+```
+
+## Lovelace usage:
+
+To show all matched earthquakes as table the following Lovelace configuration using *flex-table-card* card can be used
+(do not forget to replace *sensor.earthquakes* with the name of the sensor in your configuration):
+```yaml
+  - type: 'custom:flex-table-card'
+    title: Earthquakes
+    entities:
+      include: sensor.earthquakes
+    columns:
+      - name: Time
+        attr_as_list: earthquakes
+        modify: x.time
+      - name: Title
+        attr_as_list: earthquakes
+        modify: x.title
+      - name: Magnitude
+        attr_as_list: earthquakes
+        modify: x.magnitude
+```
+... or w/o using any custom cards:
+```yaml
+  - type: markdown
+    content: |
+      |Time|Title|Magnitude|
+      |----|-----|---------:|
+      {% if state_attr('sensor.earthquakes', 'earthquakes') != None -%}
+        {%- for entry in state_attr('sensor.earthquakes', 'earthquakes') -%}
+      |{{ entry.time }} | [{{ entry.title }}]({{ entry.link }}) | {{
+      entry.magnitude }}|
+        {% endfor -%}                
+      {%- endif -%}
 ```
 
 <!---->
