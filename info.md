@@ -75,6 +75,12 @@ To show all matched earthquakes as table the following Lovelace configuration us
         attr_as_list: earthquakes
         modify: x.magnitude
 ```
+<p align="center">
+  <img align="center" alt="Lovelace earthquake table" src="https://github.com/msekoranja/emsc-hacs-repository/blob/master/docs/lovelace-table.png?raw=true">
+</p>
+
+
+
 ... or w/o using any custom cards:
 ```yaml
   - type: markdown
@@ -88,6 +94,10 @@ To show all matched earthquakes as table the following Lovelace configuration us
         {% endfor -%}                
       {%- endif -%}
 ```
+<p align="center">
+  <img align="center" alt="Markdown table" src="https://github.com/msekoranja/emsc-hacs-repository/blob/master/docs/md-gui.png?raw=true">
+</p>
+
 
 <!---->
 
