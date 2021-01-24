@@ -1,6 +1,5 @@
 [![GitHub Release][releases-shield]][releases]
 [![hacs][hacsbadge]][hacs]
-[![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
 The `emscrss` sensor retrieves events from a EMSC earthquake RSS feed and shows information of those events filtered by distance and magnitude to Home Assistant.
 
@@ -101,13 +100,9 @@ To show all matched earthquakes as table the following Lovelace configuration us
 
 <!---->
 
-<a href="https://www.buymeacoffee.com/msekoranja" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/black_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a><br>
-
 ***
 
 [emscrss]: https://github.com/msekoranja/emsc-hacs-repository
-[buymecoffee]: https://www.buymeacoffee.com/msekoranja
-[buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=for-the-badge
 [hacs]: https://hacs.xyz
 [hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg?style=for-the-badge
 [releases-shield]: https://img.shields.io/github/release/cmsekoranja/emsc-hacs-repository.svg?style=for-the-badge
