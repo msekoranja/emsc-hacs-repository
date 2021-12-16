@@ -1,6 +1,12 @@
 default_config:
 
 logger:
-  default: info
+  default: warning
   logs:
-    custom_components.integration_blueprint: debug
+    custom_components.emscrss: debug
+
+sensor:
+  - platform: emscrss
+    name: Earthquakes
+    radius: 9000
+    magnitude: 0.1
