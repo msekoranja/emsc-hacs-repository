@@ -1,3 +1,5 @@
+## NOTE: Sadly, EMCS has stopped supporting RSS feed making this integration obsolete!
+
 # EMSC Home Assistant Integration
 
 Provides the European-Mediterranean Seismological Centre (EMSC) RSS feed to Home Assistant.
